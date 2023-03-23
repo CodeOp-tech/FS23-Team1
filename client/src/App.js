@@ -28,14 +28,10 @@ function App() {
   const [recipe, setRecipe] = useState(null); //the recipe you clicked on in the result page
   const [recipeInstructions, setRecipeInstructions] = useState();
   const [ingredientList, setIngredientList] = useState();
-<<<<<<< HEAD
   const [recipeInstructionsFav, setRecipeInstructionsFav] = useState();
   const [ingredientListFav, setIngredientsListFav] = useState();
-=======
->>>>>>> main
   const [allfav, setAllFav] = useState([]);
 
-  console.log(allfav);
   //BACKEND ROUTES
 
   //GETs all registered users/works yay!
@@ -164,7 +160,6 @@ function App() {
   };
 
   //make one route for add/delete
-<<<<<<< HEAD
   const AddOrDelete = async (id) => {
     let options = {
       method: "POST",
@@ -189,57 +184,9 @@ function App() {
         setAllFav(data);
       } else {
         console.log(`Server Error: ${response.status} ${response.statusText}`);
-=======
-  const AddOrDelete = async (recipe, event) => {
-    if (event) {
-      event.stopPropagation();
-    }
-
-    if (recipe) {
-      let options = {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + Local.getToken(),
-        },
-        body: JSON.stringify({
-          recipe_id: recipe.id,
-          recipe_title: recipe.title,
-          recipe_image_url: recipe.image,
-          //user_id was undefined so we have to pass Local.getUserId!!!!
-          user_id: Local.getUserId(),
-        }),
-        // headers: {
-        //   "Content-Type": "application/json",
-        //   Authorization: "Bearer " + Local.getToken(),
-        // },
-        // body: JSON.stringify({
-        //   recipe_id: recipe.id,
-        //   recipe_title: recipe.title,
-        //   recipe_image_url: recipe.image,
-        //   //user_id was undefined so we have to pass Local.getUserId!!!!
-        //   user_id: Local.getUserId(),
-        // }),
-      };
-      // console.log("this is from POST btw", id);
-
-      try {
-        // console.log("hello from try", id, recipe.title);
-        let response = await fetch(`/api/favorites`, options);
-
-        if (response.ok) {
-          // console.log("hello from response ok", response);
-          let data = await response.json();
-          setAllFav(data);
-        } else {
-          console.log(
-            `Server Error: ${response.status} ${response.statusText}`
-          );
-        }
-      } catch (err) {
-        console.log(`Network Error: ${err.message} `);
->>>>>>> main
       }
+    } catch (err) {
+      console.log(`Network Error: ${err.message} `);
     }
   };
 
@@ -267,27 +214,19 @@ function App() {
               showRecipe={showRecipe}
               ingredients={ingredients}
               setIngredients={setIngredients}
-              allfav={allfav}
-              AddOrDelete={AddOrDelete}
-              // recipe={recipe}
             />
           }
         />
         <Route
-<<<<<<< HEAD
           path="/featured/:id"
-=======
-          path="/Featured/:id"
->>>>>>> main
           element={
             <RecipeView
               recipe={recipe}
               recipeInstructions={recipeInstructions}
               ingredientList={ingredientList}
               setRecipe={setRecipe}
+              handleClick={handleClick}
               AddOrDelete={AddOrDelete}
-              allfav={allfav}
-              allRecipes={allRecipes}
             />
           }
         />
@@ -303,11 +242,7 @@ function App() {
           path="/favorites"
           element={
             <PrivateRoute>
-<<<<<<< HEAD
               <FavoritesView allFav={allfav} showRecipeFavCb={showRecipeFav} />
-=======
-              <FavoritesView allfav={allfav} />
->>>>>>> main
             </PrivateRoute>
           }
         />
