@@ -17,7 +17,7 @@ export class Api {
         const recipes = await response.json();
         return recipes;
       } else {
-        console.log("Error: " + response);
+        console.log(response);
       }
     } catch (err) {
       console.log(`Network error: ${err.message}`);

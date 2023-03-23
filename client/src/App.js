@@ -4,7 +4,6 @@ import "bootstrap/dist/css/bootstrap.min.css"; //this is a the css file used in 
 import "./App.css";
 import { Local } from "./helpers/Local";
 import { Api } from "./helpers/Api";
-
 import NavBar from "./components/NavBar";
 import HomePage from "./views/Home/HomePage";
 import RegisterView from "./views/RegisterView";
@@ -13,7 +12,6 @@ import ResultView from "./components/ResultView";
 import RecipeView from "./components/RecipeView";
 import FavoritesView from "./views/FavoritesView";
 import PrivateRoute from "./components/PrivateRoute";
-
 import { getIngredientList, getSteps } from "./helpers/Api";
 
 function App() {
@@ -28,11 +26,9 @@ function App() {
   const [recipe, setRecipe] = useState(null); //the recipe you clicked on in the result page
   const [recipeInstructions, setRecipeInstructions] = useState();
   const [ingredientList, setIngredientList] = useState();
-<<<<<<< HEAD
   const [recipeInstructionsFav, setRecipeInstructionsFav] = useState();
   const [ingredientListFav, setIngredientsListFav] = useState();
-=======
->>>>>>> main
+
   const [allfav, setAllFav] = useState([]);
 
   console.log(allfav);
@@ -164,7 +160,7 @@ function App() {
   };
 
   //make one route for add/delete
-<<<<<<< HEAD
+
   const AddOrDelete = async (id) => {
     let options = {
       method: "POST",
@@ -189,7 +185,7 @@ function App() {
         setAllFav(data);
       } else {
         console.log(`Server Error: ${response.status} ${response.statusText}`);
-=======
+
   const AddOrDelete = async (recipe, event) => {
     if (event) {
       event.stopPropagation();
@@ -238,7 +234,7 @@ function App() {
         }
       } catch (err) {
         console.log(`Network Error: ${err.message} `);
->>>>>>> main
+
       }
     }
   };
@@ -274,11 +270,7 @@ function App() {
           }
         />
         <Route
-<<<<<<< HEAD
           path="/featured/:id"
-=======
-          path="/Featured/:id"
->>>>>>> main
           element={
             <RecipeView
               recipe={recipe}
@@ -303,11 +295,8 @@ function App() {
           path="/favorites"
           element={
             <PrivateRoute>
-<<<<<<< HEAD
               <FavoritesView allFav={allfav} showRecipeFavCb={showRecipeFav} />
-=======
-              <FavoritesView allfav={allfav} />
->>>>>>> main
+
             </PrivateRoute>
           }
         />
