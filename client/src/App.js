@@ -30,7 +30,7 @@ function App() {
   const [ingredientList, setIngredientList] = useState();
   const [recipeInstructionsFav, setRecipeInstructionsFav] = useState();
   const [ingredientListFav, setIngredientsListFav] = useState();
-  const [allFav, setAllFav] = useState([]);
+  const [allfav, setAllFav] = useState([]);
 
   //BACKEND ROUTES
 
@@ -101,6 +101,7 @@ function App() {
     let featuredRecipe = allRecipes.find((r) => r.id === id); //use the id to find the correspondent recipe
     let recipeInfo = await Api.getRecipeInfo(id); //contains recipe preparation time - id here is the one you click from the card on result
     let recipeNutrition = await Api.getRecipeNutrition(id);
+
     featuredRecipe.preparationTime = recipeInfo.readyInMinutes; //create a new property to store the preparation time. readyInMinutes from the spoonacular api
     featuredRecipe.nutrition = recipeNutrition;
     setRecipe(featuredRecipe); //save the correspondent recipe to the state
@@ -109,15 +110,12 @@ function App() {
     navigate(`/featured/${id}`); //navigate to the correspondent recipe page
   };
 
-  //show recipe from the fav click
   const showRecipeFav = async (id) => {
     //r.id from every recipe of the result page and the second id is the one from the card that we clicked
-    let featuredRecipe = allFav.find((r) => r.recipe_id === id); //use the id to find the correspondent recipe
-    console.log(featuredRecipe);
+    let featuredRecipe = allRecipes.find((r) => r.recipe_id === id); //use the id to find the correspondent recipe
     let recipeInfo = await Api.getRecipeInfo(id); //contains recipe preparation time - id here is the one you click from the card on result
-    console.log(recipeInfo);
     let recipeNutrition = await Api.getRecipeNutrition(id);
-    console.log(recipeNutrition);
+
     featuredRecipe.preparationTime = recipeInfo.readyInMinutes; //create a new property to store the preparation time. readyInMinutes from the spoonacular api
     featuredRecipe.nutrition = recipeNutrition;
     setRecipe(featuredRecipe); //save the correspondent recipe to the state
@@ -132,18 +130,6 @@ function App() {
       setRecipeInstructions(recipeInstructions);
       const { ingredients } = await getIngredientList(recipe.id);
       setIngredientList(ingredients);
-    }
-    if (recipe) {
-      fetchData();
-    }
-  }, [recipe]);
-
-  useEffect(() => {
-    async function fetchData() {
-      const recipeInstructionsFav = await getSteps(recipe.recipe_id);
-      setRecipeInstructions(recipeInstructionsFav);
-      const { ingredientsFav } = await getIngredientList(recipe.recipe_id);
-      setIngredientList(ingredientsFav);
     }
     if (recipe) {
       fetchData();
@@ -188,17 +174,6 @@ function App() {
         //user_id was undefined so we have to pass Local.getUserId!!!!
         user_id: Local.getUserId(),
       }),
-      // headers: {
-      //   "Content-Type": "application/json",
-      //   Authorization: "Bearer " + Local.getToken(),
-      // },
-      // body: JSON.stringify({
-      //   recipe_id: id,
-      //   recipe_title: recipe.title,
-      //   recipe_image_url: recipe.image,
-      //   //user_id was undefined so we have to pass Local.getUserId!!!!
-      //   user_id: Local.getUserId(),
-      // }),
     };
     try {
       let response = await fetch(`/api/favorites`, options);
@@ -267,12 +242,7 @@ function App() {
           path="/favorites"
           element={
             <PrivateRoute>
-              <FavoritesView
-                allFav={allFav}
-                showRecipeFavCb={showRecipeFav}
-                recipeInstructionsCb={setRecipeInstructionsFav}
-                ingredientListCb={setIngredientsListFav}
-              />
+              <FavoritesView allFav={allfav} showRecipeFavCb={showRecipeFav} />
             </PrivateRoute>
           }
         />

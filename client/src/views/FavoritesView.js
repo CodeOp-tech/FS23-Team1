@@ -2,16 +2,13 @@ import React from "react";
 import { Container, Card, Col, Row } from "react-bootstrap";
 import "./Favorites.css";
 import noFavNugget from "../img/noFavNugget.gif";
-import { FcClock } from "react-icons/fc";
 import "react-toastify/dist/ReactToastify.css";
+import { AiFillLike } from "react-icons/ai";
 
 const FavoritesView = (props) => {
-  const { allFav, showRecipeFavCb, recipeInstructionsCb, ingredientListCb } =
-    props;
+  const { allFav, showRecipeFavCb } = props;
 
   const handleClick = (recipe_id) => {
-    recipeInstructionsCb(recipe_id);
-    ingredientListCb(recipe_id);
     showRecipeFavCb(recipe_id); //time, nutrition
     console.log("someone is clicking on a fav card");
   };
@@ -53,9 +50,11 @@ const FavoritesView = (props) => {
 
                   <Card.Body>
                     <Card.Title>{recipe.recipe_title}</Card.Title>
-                    <Card.Subtitle>
-                      <FcClock size="2rem" />
-                      Ready in {recipe.preparationTime} mins
+                    <Card.Subtitle style={{ color: "orange" }}>
+                      <h5>
+                        <AiFillLike size="1.8rem" />
+                        {recipe.likes}
+                      </h5>
                     </Card.Subtitle>
                   </Card.Body>
                 </Card>
