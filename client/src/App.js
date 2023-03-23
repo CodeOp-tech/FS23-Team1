@@ -188,7 +188,7 @@ function App() {
   //     }
   //   }
 
-  const AddOrDelete = async (recipe, event) => {
+  const addOrDelete = async (recipe, event) => {
     if (event) {
       event.stopPropagation();
     }
@@ -265,7 +265,7 @@ function App() {
               ingredients={ingredients}
               setIngredients={setIngredients}
               allfav={allfav}
-              AddOrDelete={AddOrDelete}
+              addOrDelete={addOrDelete}
               // recipe={recipe}
             />
           }
@@ -278,7 +278,7 @@ function App() {
               recipeInstructions={recipeInstructions}
               ingredientList={ingredientList}
               setRecipe={setRecipe}
-              AddOrDelete={AddOrDelete}
+              AddOrDelete={addOrDelete}
               allfav={allfav}
               allRecipes={allRecipes}
             />
