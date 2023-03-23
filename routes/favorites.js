@@ -15,13 +15,7 @@ router.get("/favorites/:id", ensureSameUser, async function (req, res) {
     let sql = `SELECT * FROM favorites WHERE user_id = ${id}`;
     let results = await db(sql);
     let favorites = results.data;
-
-    if (favorites.length === 0) {
-      //if the database is empty
-      res.send("You haven't added any favorite recipe yet");
-    } else {
-      res.status(200).send(favorites);
-    }
+    res.status(200).send(favorites);
   } catch (err) {
     res.status(500).send(`${err.message}`);
   }
@@ -44,16 +38,27 @@ router.post("/favorites", ensureUserLoggedIn, async (req, res) => {
       INSERT INTO FAVORITES (recipe_id, recipe_title, recipe_image_url, user_id) 
       VALUES ("${recipe_id}", "${recipe_title}", "${recipe_image_url}", "${user_id}")`;
       let result = await db(sql);
+      //return updated list of favourites
+      sql = `SELECT * FROM favorites WHERE user_id="${user_id}"`;
+      result = await db(sql);
+      //it never returned updated list of fav so button fav didnt get that info and coulnt change colour!!!!
       res.status(200).send(result.data);
     } else {
       // or else delete it
       let sql = `
-      DELETE FROM FAVORITES WHERE recipe_id === "${recipe_id}" and user_id="${user_id}"`;
+      DELETE FROM FAVORITES WHERE recipe_id = "${recipe_id}" and user_id="${user_id}"`;
       let response = await db(sql);
-      res.send(response.data);
+      //return updated list of favourites
+      sql = `SELECT * FROM favorites WHERE user_id="${user_id}"`;
+      result = await db(sql);
+      res.send(result.data);
     }
   } catch (err) {
-    res.status(500).send(`${err.message}`);
+    if (err) {
+      res.status(500).send(`${err.message}`);
+    } else {
+      res.status(500).send("Error happened - favourites");
+    }
   }
 });
 
