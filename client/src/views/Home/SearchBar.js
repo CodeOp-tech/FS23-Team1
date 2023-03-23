@@ -5,7 +5,6 @@ import { Container, Row, Col, Form, Button, InputGroup } from "react-bootstrap";
 import "./SearchBar.css";
 import Badge from "react-bootstrap/Badge";
 import XIcon from "../../components/XIcon";
-import sadNuggie from "../../img/sadNuggie.gif";
 
 const SearchBar = (props) => {
   const [inputValue, setInputValue] = useState("");
