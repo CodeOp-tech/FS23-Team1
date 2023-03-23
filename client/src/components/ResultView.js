@@ -15,8 +15,16 @@ import { AiFillLike } from "react-icons/ai";
 import sadNuggie from "../img/sadNuggie.gif";
 
 export default function ResultView(props) {
-  const { allRecipes, setAllRecipes, showRecipe, ingredients, setIngredients } =
-    props;
+  const {
+    allRecipes,
+    setAllRecipes,
+    showRecipe,
+    ingredients,
+    setIngredients,
+    allfav,
+    AddOrDelete,
+    // recipe,
+  } = props;
   const [recipeToCompare, setRecipeCompare] = useState({});
   const [show, setShow] = useState(false);
   console.log(allRecipes);
@@ -97,6 +105,7 @@ export default function ResultView(props) {
           marginTop: "25px",
         }}
       >
+
         {allRecipes.length !== 0 ? (
           <Row xs={1} md={2} className="g-4">
             <Col>
@@ -115,6 +124,72 @@ export default function ResultView(props) {
                   }}
                 >
                   <div className="container">
+
+        <Row xs={1} md={2} className="g-4">
+          <Col>
+            {allRecipes.map((recipe) => (
+              <Card
+                key={recipe.id}
+                className="card-recipe"
+                style={{ width: "18rem" }}
+                onClick={(event) => {
+                  //only for the compare button
+                  if (
+                    event.target.localName !== "svg" &&
+                    event.target.localName !== "path"
+                  ) {
+                    showRecipe(recipe.id);
+                  }
+                }}
+              >
+                <div className="container">
+                  <Card.Img variant="top" src={recipe.image} />
+                  {recipe &&
+                    (allfav.some((e) => recipe.id === e.recipe_id) ? (
+                      <div>
+                        <button
+                          id="buttononrecipe"
+                          type="button"
+                          onClick={(event) => {
+                            //tried: event.preventDefault(); &event.stopPropagation();
+                            // event.preventDefault();
+                            // event.stopPropagation();
+                            AddOrDelete(recipe, event);
+                          }}
+                          className="btn btn-danger"
+                        >
+                          <i className="bi bi-heart-fill"> </i>
+                        </button>
+                      </div>
+                    ) : (
+                      <div>
+                        <button
+                          id="buttononrecipe"
+                          type="button"
+                          onClick={(event) => {
+                            // event.preventDefault();
+                            // event.stopPropagation();
+                            AddOrDelete(recipe, event);
+                          }}
+                          className="btn btn-secondary"
+                        >
+                          <i className="bi bi-heart"></i>
+                        </button>
+                      </div>
+                    ))}
+                </div>
+
+                <Card.Body>
+                  <Card.Title>{recipe.title}</Card.Title>
+                  <Card.Subtitle style={{ color: "orange" }}>
+                    <h5>
+                      <AiFillLike size="1.8rem" />
+                      {recipe.likes}
+                    </h5>
+                  </Card.Subtitle>
+                  {/*(? means if recipeA is not undefined get the title, else return undefined)*/}
+                  {recipeToCompare.recipeA?.title !== recipe.title && (
+
                     <button
                       type="button"
                       className="btn btn-secondary"
