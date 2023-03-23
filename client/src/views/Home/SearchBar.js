@@ -5,20 +5,26 @@ import { Container, Row, Col, Form, Button, InputGroup } from "react-bootstrap";
 import "./SearchBar.css";
 import Badge from "react-bootstrap/Badge";
 import XIcon from "../../components/XIcon";
+import sadNuggie from "../../img/sadNuggie.gif";
 
 const SearchBar = (props) => {
   const [inputValue, setInputValue] = useState("");
   const navigate = useNavigate();
   const { setAllRecipes, allRecipes, ingredients, setIngredients } = props;
+  // const [hasSearched, setHasSearched] = useState(true);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     const result = await Api.getRecipes(ingredients);
+    // if (result.length > 0) {
     setAllRecipes(result); //Using state setter to save recipes fetched from api
     setInputValue(""); //reset empty input field after clicked search button
     navigate("/resultview"); //after "search" go to the ResultView
+    // setHasSearched(false);
+    // }
   };
 
+  // console.log(hasSearched);
   const handleChange = (event) => {
     setInputValue(event.target.value.trim());
   };
@@ -125,6 +131,22 @@ const SearchBar = (props) => {
               Search recipes with these ingredients
             </Button>
           </Form>
+          {/* {allRecipes.length === 0 && 
+          hasSearched && 
+          (
+            <div>
+              <p style={{ fontSize: "11px", marginTop: "10px" }}>
+                Oups, we couldn't find any recipe that matches your ingredients.
+                <br />
+                Try with another ingredient
+              </p>
+              <img
+                src={sadNuggie}
+                style={{ width: 150, height: 150 }}
+                alt="no-results-nuggie"
+              />
+            </div>
+          )} */}
         </Col>
       </Row>
     </Container>

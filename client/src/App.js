@@ -4,7 +4,6 @@ import "bootstrap/dist/css/bootstrap.min.css"; //this is a the css file used in 
 import "./App.css";
 import { Local } from "./helpers/Local";
 import { Api } from "./helpers/Api";
-
 import NavBar from "./components/NavBar";
 import HomePage from "./views/Home/HomePage";
 import RegisterView from "./views/RegisterView";
@@ -13,7 +12,6 @@ import ResultView from "./components/ResultView";
 import RecipeView from "./components/RecipeView";
 import FavoritesView from "./views/FavoritesView";
 import PrivateRoute from "./components/PrivateRoute";
-
 import { getIngredientList, getSteps } from "./helpers/Api";
 
 function App() {
@@ -28,7 +26,7 @@ function App() {
   const [recipe, setRecipe] = useState(null); //the recipe you clicked on in the result page
   const [recipeInstructions, setRecipeInstructions] = useState();
   const [ingredientList, setIngredientList] = useState();
-  const [allFav, setAllFav] = useState([]);
+  const [allfav, setAllFav] = useState([]);
 
   //BACKEND ROUTES
 
@@ -215,7 +213,6 @@ function App() {
         />
         <Route
           path="/Featured/:id"
-          path="/Featured/:id"
           element={
             <RecipeView
               recipe={recipe}
@@ -239,7 +236,7 @@ function App() {
           path="/favorites"
           element={
             <PrivateRoute>
-              <FavoritesView allFav={allFav} />
+              <FavoritesView allfav={allfav} />
             </PrivateRoute>
           }
         />
