@@ -11,6 +11,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { TbArrowsLeftRight } from "react-icons/tb";
 import { GiNoodles, GiChickenLeg } from "react-icons/gi";
+import { FcClock } from "react-icons/fc";
 import { AiFillLike } from "react-icons/ai";
 
 export default function ResultView(props) {
@@ -104,6 +105,7 @@ export default function ResultView(props) {
                 className="card-recipe"
                 style={{ width: "18rem" }}
                 onClick={(event) => {
+                  //only for the compare button
                   if (
                     event.target.localName !== "svg" &&
                     event.target.localName !== "path"
@@ -126,8 +128,14 @@ export default function ResultView(props) {
                 <Card.Body>
                   <Card.Title>{recipe.title}</Card.Title>
                   <Card.Subtitle style={{ color: "orange" }}>
-                    <AiFillLike size="1.8rem" />
-                    {recipe.likes}
+                    <h5>
+                      <FcClock size="2rem" />
+                      Ready in {recipe.preparationTime} mins
+                    </h5>
+                    <h5>
+                      <AiFillLike size="1.8rem" />
+                      {recipe.likes}
+                    </h5>
                   </Card.Subtitle>
                   {/*(? means if recipeA is not undefined get the title, else return undefined)*/}
                   {recipeToCompare.recipeA?.title !== recipe.title && (

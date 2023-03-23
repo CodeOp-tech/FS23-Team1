@@ -28,6 +28,8 @@ function App() {
   const [recipe, setRecipe] = useState(null); //the recipe you clicked on in the result page
   const [recipeInstructions, setRecipeInstructions] = useState();
   const [ingredientList, setIngredientList] = useState();
+  const [recipeInstructionsFav, setRecipeInstructionsFav] = useState();
+  const [ingredientListFav, setIngredientsListFav] = useState();
   const [allFav, setAllFav] = useState([]);
 
   //BACKEND ROUTES
@@ -76,6 +78,8 @@ function App() {
       console.log("you are logged in");
       setUser(myresponse.data.user);
       setLoginErrorMsg("");
+      // need add line 80 because this will fetch all the fav data when loging in and not showing the one from the previous user
+      getFav(Local.getUserId());
       //after clicking on login, if the action succeed then the user is redirected to the homepage
       navigate("*");
     } else {
@@ -87,15 +91,34 @@ function App() {
   function doLogout() {
     Local.removeUserInfo();
     setUser(null);
+    setAllFav([]);
     // (NavBar will send user to home page)
   }
 
   // RECIPES
   const showRecipe = async (id) => {
+    //r.id from every recipe of the result page and the second id is the one from the card that we clicked
     let featuredRecipe = allRecipes.find((r) => r.id === id); //use the id to find the correspondent recipe
-    let recipeInfo = await Api.getRecipeInfo(id); //contains recipe preparation time
+    let recipeInfo = await Api.getRecipeInfo(id); //contains recipe preparation time - id here is the one you click from the card on result
     let recipeNutrition = await Api.getRecipeNutrition(id);
-    featuredRecipe.preparationTime = recipeInfo.readyInMinutes; //create a new property to store the preparation time
+    featuredRecipe.preparationTime = recipeInfo.readyInMinutes; //create a new property to store the preparation time. readyInMinutes from the spoonacular api
+    featuredRecipe.nutrition = recipeNutrition;
+    setRecipe(featuredRecipe); //save the correspondent recipe to the state
+
+    Local.saveFeaturedRecipe(featuredRecipe); //save to the localStorage!!!
+    navigate(`/featured/${id}`); //navigate to the correspondent recipe page
+  };
+
+  //show recipe from the fav click
+  const showRecipeFav = async (id) => {
+    //r.id from every recipe of the result page and the second id is the one from the card that we clicked
+    let featuredRecipe = allFav.find((r) => r.recipe_id === id); //use the id to find the correspondent recipe
+    console.log(featuredRecipe);
+    let recipeInfo = await Api.getRecipeInfo(id); //contains recipe preparation time - id here is the one you click from the card on result
+    console.log(recipeInfo);
+    let recipeNutrition = await Api.getRecipeNutrition(id);
+    console.log(recipeNutrition);
+    featuredRecipe.preparationTime = recipeInfo.readyInMinutes; //create a new property to store the preparation time. readyInMinutes from the spoonacular api
     featuredRecipe.nutrition = recipeNutrition;
     setRecipe(featuredRecipe); //save the correspondent recipe to the state
 
@@ -115,8 +138,19 @@ function App() {
     }
   }, [recipe]);
 
-  //FAVOURITES routes
+  useEffect(() => {
+    async function fetchData() {
+      const recipeInstructionsFav = await getSteps(recipe.recipe_id);
+      setRecipeInstructions(recipeInstructionsFav);
+      const { ingredientsFav } = await getIngredientList(recipe.recipe_id);
+      setIngredientList(ingredientsFav);
+    }
+    if (recipe) {
+      fetchData();
+    }
+  }, [recipe]);
 
+  //FAVOURITES routes
   const handleClick = () => {
     console.log("fav button was pressed and passed to APP.js");
   };
@@ -127,11 +161,9 @@ function App() {
   useEffect(() => {
     //we need to pass id, current id is the one store in the local! Id of logged in user
     getFav(Local.getUserId());
-    //we need to pass id, current id is the one store in the local! Id of logged in user
-    getFav(Local.getUserId());
   }, []);
 
-  //GET ALL FAV of logged in user
+  //GET ALL FAV by UserId
   const getFav = async (id) => {
     let Uresponse = await Api.getFav(id);
     if (Uresponse.ok) {
@@ -150,33 +182,28 @@ function App() {
         Authorization: "Bearer " + Local.getToken(),
       },
       body: JSON.stringify({
-        recipe_id: id,
+        recipe_id: recipe.id,
         recipe_title: recipe.title,
         recipe_image_url: recipe.image,
         //user_id was undefined so we have to pass Local.getUserId!!!!
         user_id: Local.getUserId(),
       }),
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + Local.getToken(),
-      },
-      body: JSON.stringify({
-        recipe_id: id,
-        recipe_title: recipe.title,
-        recipe_image_url: recipe.image,
-        //user_id was undefined so we have to pass Local.getUserId!!!!
-        user_id: Local.getUserId(),
-      }),
+      // headers: {
+      //   "Content-Type": "application/json",
+      //   Authorization: "Bearer " + Local.getToken(),
+      // },
+      // body: JSON.stringify({
+      //   recipe_id: id,
+      //   recipe_title: recipe.title,
+      //   recipe_image_url: recipe.image,
+      //   //user_id was undefined so we have to pass Local.getUserId!!!!
+      //   user_id: Local.getUserId(),
+      // }),
     };
-    console.log("this is from POST btw", id);
-    console.log("this is from POST btw", id);
     try {
-      console.log("hello from try", id, recipe.title);
       let response = await fetch(`/api/favorites`, options);
       console.log("hello from try", id, recipe.title);
-      let response = await fetch(`/api/favorites`, options);
       if (response.ok) {
-        console.log("hello from response ok", response);
         console.log("hello from response ok", response);
         let data = await response.json();
         setAllFav(data);
@@ -216,8 +243,7 @@ function App() {
           }
         />
         <Route
-          path="/Featured/:id"
-          path="/Featured/:id"
+          path="/featured/:id"
           element={
             <RecipeView
               recipe={recipe}
@@ -241,7 +267,12 @@ function App() {
           path="/favorites"
           element={
             <PrivateRoute>
-              <FavoritesView allFav={allFav} />
+              <FavoritesView
+                allFav={allFav}
+                showRecipeFavCb={showRecipeFav}
+                recipeInstructionsCb={setRecipeInstructionsFav}
+                ingredientListCb={setIngredientsListFav}
+              />
             </PrivateRoute>
           }
         />
