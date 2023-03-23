@@ -14,8 +14,16 @@ import { GiNoodles, GiChickenLeg } from "react-icons/gi";
 import { AiFillLike } from "react-icons/ai";
 
 export default function ResultView(props) {
-  const { allRecipes, setAllRecipes, showRecipe, ingredients, setIngredients } =
-    props;
+  const {
+    allRecipes,
+    setAllRecipes,
+    showRecipe,
+    ingredients,
+    setIngredients,
+    allfav,
+    AddOrDelete,
+    // recipe,
+  } = props;
   const [recipeToCompare, setRecipeCompare] = useState({});
   const [show, setShow] = useState(false);
 
@@ -114,14 +122,40 @@ export default function ResultView(props) {
                 }}
               >
                 <div className="container">
-                  <button
-                    type="button"
-                    className="btn btn-secondary"
-                    id="buttononrecipe"
-                  >
-                    <i id="heartbutton" className="bi bi-heart"></i>
-                  </button>
                   <Card.Img variant="top" src={recipe.image} />
+                  {recipe &&
+                    (allfav.some((e) => recipe.id === e.recipe_id) ? (
+                      <div>
+                        <button
+                          id="buttononrecipe"
+                          type="button"
+                          onClick={(event) => {
+                            //tried: event.preventDefault(); &event.stopPropagation();
+                            // event.preventDefault();
+                            // event.stopPropagation();
+                            AddOrDelete(recipe, event);
+                          }}
+                          className="btn btn-danger"
+                        >
+                          <i className="bi bi-heart-fill"> </i>
+                        </button>
+                      </div>
+                    ) : (
+                      <div>
+                        <button
+                          id="buttononrecipe"
+                          type="button"
+                          onClick={(event) => {
+                            // event.preventDefault();
+                            // event.stopPropagation();
+                            AddOrDelete(recipe, event);
+                          }}
+                          className="btn btn-secondary"
+                        >
+                          <i className="bi bi-heart"></i>
+                        </button>
+                      </div>
+                    ))}
                 </div>
 
                 <Card.Body>

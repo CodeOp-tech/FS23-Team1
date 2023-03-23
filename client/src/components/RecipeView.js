@@ -12,10 +12,16 @@ export default function RecipeView(props) {
     setRecipe,
     recipeInstructions,
     ingredientList,
-    handleClick,
     AddOrDelete,
+    allfav,
+    allRecipes,
   } = props;
   //Empty array is truthy
+
+  // console.log(allfav);
+  // console.log(recipe.id);
+  // console.log(recipe);
+
   const recipeSteps = [];
   //recipeInstructions is an array, we need to check both if is not empty and lentgh more than 0
   if (recipeInstructions && recipeInstructions.length > 0) {
@@ -57,17 +63,36 @@ export default function RecipeView(props) {
 
           <div>
             {/* if added to fav heart isn't filled once clicked it calls addFav fn from App.js clicked again it calls deleteFav */}
-            <button
-              type="button"
-              onClick={() => AddOrDelete(recipe.id)}
-              className="btn btn-secondary"
-            >
-              <i className="bi bi-heart"> Save</i>
-            </button>
+
+            <div key={recipe.id}>
+              {allfav.some((e) => recipe.id === e.recipe_id) ? (
+                <div>
+                  <button
+                    type="button"
+                    onClick={() => AddOrDelete(recipe)}
+                    className="btn btn-danger"
+                  >
+                    <i className="bi bi-heart-fill"> Saved</i>
+                  </button>
+                </div>
+              ) : (
+                <div>
+                  <button
+                    type="button"
+                    onClick={() => AddOrDelete(recipe)}
+                    className="btn btn-secondary"
+                  >
+                    <i className="bi bi-heart"> Save</i>
+                  </button>
+                </div>
+              )}
+            </div>
+
             <h5 style={{ color: "orange", marginTop: "1rem" }}>
               <AiFillLike size="1.8rem" />
               {recipe.likes}
             </h5>
+
             <h5>
               <FcClock size="2rem" />
               Ready in {recipe.preparationTime} mins
