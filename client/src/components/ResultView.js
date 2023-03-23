@@ -112,6 +112,7 @@ export default function ResultView(props) {
                 className="card-recipe"
                 style={{ width: "18rem" }}
                 onClick={(event) => {
+                  //only for the compare button
                   if (
                     event.target.localName !== "svg" &&
                     event.target.localName !== "path"
@@ -160,8 +161,10 @@ export default function ResultView(props) {
                 <Card.Body>
                   <Card.Title>{recipe.title}</Card.Title>
                   <Card.Subtitle style={{ color: "orange" }}>
-                    <AiFillLike size="1.8rem" />
-                    {recipe.likes}
+                    <h5>
+                      <AiFillLike size="1.8rem" />
+                      {recipe.likes}
+                    </h5>
                   </Card.Subtitle>
                   {/*(? means if recipeA is not undefined get the title, else return undefined)*/}
                   {recipeToCompare.recipeA?.title !== recipe.title && (
