@@ -189,7 +189,6 @@ export default function ResultView(props) {
                   </Card.Subtitle>
                   {/*(? means if recipeA is not undefined get the title, else return undefined)*/}
                   {recipeToCompare.recipeA?.title !== recipe.title && (
-
                     <button
                       type="button"
                       className="btn btn-secondary"
@@ -198,7 +197,7 @@ export default function ResultView(props) {
                       <i id="heartbutton" className="bi bi-heart"></i>
                     </button>
                     <Card.Img variant="top" src={recipe.image} />
-                  </div>
+                    </div>
 
                   <Card.Body>
                     <Card.Title>{recipe.title}</Card.Title>
@@ -244,7 +243,6 @@ export default function ResultView(props) {
             />
           </div>
         )}
-        {/* we need to add the onClick to do another call and get more recipes */}
       </Container>
     </div>
   );

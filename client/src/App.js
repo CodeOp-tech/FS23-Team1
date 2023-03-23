@@ -161,30 +161,32 @@ function App() {
 
   //make one route for add/delete
 
-  const AddOrDelete = async (id) => {
-    let options = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + Local.getToken(),
-      },
-      body: JSON.stringify({
-        recipe_id: recipe.id,
-        recipe_title: recipe.title,
-        recipe_image_url: recipe.image,
-        //user_id was undefined so we have to pass Local.getUserId!!!!
-        user_id: Local.getUserId(),
-      }),
-    };
-    try {
-      let response = await fetch(`/api/favorites`, options);
-      console.log("hello from try", id, recipe.title);
-      if (response.ok) {
-        console.log("hello from response ok", response);
-        let data = await response.json();
-        setAllFav(data);
-      } else {
-        console.log(`Server Error: ${response.status} ${response.statusText}`);
+  // const AddOrDelete = async (id) => {
+  //   let options = {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       Authorization: "Bearer " + Local.getToken(),
+  //     },
+  //     body: JSON.stringify({
+  //       recipe_id: recipe.id,
+  //       recipe_title: recipe.title,
+  //       recipe_image_url: recipe.image,
+  //       //user_id was undefined so we have to pass Local.getUserId!!!!
+  //       user_id: Local.getUserId(),
+  //     }),
+  //   };
+  //   try {
+  //     let response = await fetch(`/api/favorites`, options);
+  //     console.log("hello from try", id, recipe.title);
+  //     if (response.ok) {
+  //       console.log("hello from response ok", response);
+  //       let data = await response.json();
+  //       setAllFav(data);
+  //     } else {
+  //       console.log(`Server Error: ${response.status} ${response.statusText}`);
+  //     }
+  //   }
 
   const AddOrDelete = async (recipe, event) => {
     if (event) {
@@ -234,7 +236,6 @@ function App() {
         }
       } catch (err) {
         console.log(`Network Error: ${err.message} `);
-
       }
     }
   };
@@ -296,7 +297,6 @@ function App() {
           element={
             <PrivateRoute>
               <FavoritesView allFav={allfav} showRecipeFavCb={showRecipeFav} />
-
             </PrivateRoute>
           }
         />
