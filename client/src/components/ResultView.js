@@ -170,10 +170,6 @@ export default function ResultView(props) {
           </div>
         )}
         {/* we need to add the onClick to do another call and get more recipes */}
-
-        {/* <Button variant="secondary" style={{ marginTop: "10px" }}>
-          // See more recipes //{" "} */}
-        {/* </Button> */}
       </Container>
     </div>
   );
