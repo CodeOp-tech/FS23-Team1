@@ -13,12 +13,11 @@ const FavoritesView = (props) => {
     console.log("someone is clicking on a fav card");
   };
 
+  console.log("what is allfav", allFav);
   //get all from fav by user id and display it
   return (
     <div>
-      <h1 style={{ padding: 20, "text-align": "center" }}>
-        My favorite recipes
-      </h1>
+      <h1 style={{ padding: 20, textAlign: "center" }}>My favorite recipes</h1>
 
       <Container
         style={{
@@ -27,7 +26,7 @@ const FavoritesView = (props) => {
           marginTop: "25px",
         }}
       >
-        {allFav ? (
+        {allFav.length !== 0 ? (
           <Row xs={1} md={2} className="g-4">
             <Col>
               {allFav.map((recipe) => (
@@ -66,7 +65,12 @@ const FavoritesView = (props) => {
             <p>
               Your list is empty. Time to add favorites for some happy cooking.
             </p>
-            <img src={noFavNugget} width="200" height="200"></img>
+            <img
+              src={noFavNugget}
+              alt="nofavnugget"
+              width="200"
+              height="200"
+            ></img>
           </div>
         )}
       </Container>

@@ -23,6 +23,8 @@ export default function RecipeView(props) {
   // console.log(recipe);
 
   const recipeSteps = [];
+  console.log(ingredientList);
+  console.log(recipeInstructions);
   //recipeInstructions is an array, we need to check both if is not empty and lentgh more than 0
   if (recipeInstructions && recipeInstructions.length > 0) {
     for (let step of recipeInstructions[0].steps) {
