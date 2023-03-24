@@ -12,6 +12,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { TbArrowsLeftRight } from "react-icons/tb";
 import { GiNoodles, GiChickenLeg } from "react-icons/gi";
 import { AiFillLike } from "react-icons/ai";
+import sadNuggie from "../img/sadNuggie.gif";
 
 export default function ResultView(props) {
   const {
@@ -21,12 +22,12 @@ export default function ResultView(props) {
     ingredients,
     setIngredients,
     allfav,
-    AddOrDelete,
+    addOrDelete,
     // recipe,
   } = props;
   const [recipeToCompare, setRecipeCompare] = useState({});
   const [show, setShow] = useState(false);
-
+  console.log(allRecipes);
   //ALERT function: we need recipe name, healthScore to show on the alert
   const getRecipeInfoToCompare = async (id) => {
     const recipeInfo = await Api.getRecipeInfo(id);
@@ -77,11 +78,11 @@ export default function ResultView(props) {
       theme: "light",
     });
   };
-  {
-    /* (line 90)Recipe onClick card and (line 114)compare button onClick will both be clicked on, 
+
+  /* (line 90)Recipe onClick card and (line 114)compare button onClick will both be clicked on, 
   so we need to give a if statement by checking the unic perperty from event.target to find which one we clicked on, 
   then we disable onClick to render the recipe page  */
-  }
+
   return (
     <div>
       <div>
@@ -90,6 +91,7 @@ export default function ResultView(props) {
             <ToastContainer />
           </div>
         ) : null}
+
         <SearchBar
           setAllRecipes={setAllRecipes}
           setIngredients={setIngredients}
@@ -104,27 +106,26 @@ export default function ResultView(props) {
           marginTop: "25px",
         }}
       >
-        <Row xs={1} md={2} className="g-4">
-          <Col>
-            {allRecipes.map((recipe) => (
-              <Card
-                key={recipe.id}
-                className="card-recipe"
-                style={{ width: "18rem" }}
-                onClick={(event) => {
-                  //only for the compare button
-                  if (
-                    event.target.localName !== "svg" &&
-                    event.target.localName !== "path"
-                  ) {
-                    showRecipe(recipe.id);
-                  }
-                }}
-              >
-                <div className="container">
-                  <Card.Img variant="top" src={recipe.image} />
-                  {recipe &&
-                    (allfav.some((e) => recipe.id === e.recipe_id) ? (
+        {allRecipes.length > 0 ? (
+          <Row xs={1} md={2} className="g-4">
+            <Col>
+              {allRecipes.map((recipe) => (
+                <Card
+                  key={recipe.id}
+                  className="card-recipe"
+                  style={{ width: "18rem" }}
+                  onClick={(event) => {
+                    if (
+                      event.target.localName !== "svg" &&
+                      event.target.localName !== "path"
+                    ) {
+                      showRecipe(recipe.id);
+                    }
+                  }}
+                >
+                  <div className="container">
+                    <Card.Img variant="top" src={recipe.image} />
+                    {recipe && (
                       <div>
                         <button
                           id="buttononrecipe"
@@ -133,67 +134,62 @@ export default function ResultView(props) {
                             //tried: event.preventDefault(); &event.stopPropagation();
                             // event.preventDefault();
                             // event.stopPropagation();
-                            AddOrDelete(recipe, event);
+                            addOrDelete(recipe, event);
                           }}
                           className="btn btn-danger"
                         >
-                          <i className="bi bi-heart-fill"> </i>
+                          {allfav.some((e) => recipe.id === e.recipe_id) ? (
+                            <i className="bi bi-heart-fill"> </i>
+                          ) : (
+                            <i className="bi bi-heart"></i>
+                          )}
                         </button>
                       </div>
-                    ) : (
-                      <div>
-                        <button
-                          id="buttononrecipe"
-                          type="button"
-                          onClick={(event) => {
-                            // event.preventDefault();
-                            // event.stopPropagation();
-                            AddOrDelete(recipe, event);
-                          }}
-                          className="btn btn-secondary"
-                        >
-                          <i className="bi bi-heart"></i>
-                        </button>
-                      </div>
-                    ))}
-                </div>
+                    )}
+                  </div>
 
-                <Card.Body>
-                  <Card.Title>{recipe.title}</Card.Title>
-                  <Card.Subtitle style={{ color: "orange" }}>
-                    <h5>
+                  <Card.Body>
+                    <Card.Title>{recipe.title}</Card.Title>
+                    <Card.Subtitle style={{ color: "orange" }}>
                       <AiFillLike size="1.8rem" />
                       {recipe.likes}
-                    </h5>
-                  </Card.Subtitle>
-                  {/*(? means if recipeA is not undefined get the title, else return undefined)*/}
-                  {recipeToCompare.recipeA?.title !== recipe.title && (
-                    <button
-                      style={{
-                        color: "orange",
-                        backgroundColor: "transparent",
-                        borderColor: "transparent",
-                      }}
-                      type="button"
-                      title="Compare health score!"
-                      onClick={(event) => {
-                        getRecipeInfoToCompare(recipe.id);
-                      }}
-                    >
-                      <GiNoodles size="1.5rem" />
-                      <TbArrowsLeftRight size="1.1rem" />
-                      <GiChickenLeg size="1.5rem" />
-                    </button>
-                  )}
-                </Card.Body>
-              </Card>
-            ))}
-          </Col>
-        </Row>
-        {/* we need to add the onClick to do another call and get more recipes */}
-        <Button variant="secondary" style={{ marginTop: "10px" }}>
-          See more recipes
-        </Button>
+                    </Card.Subtitle>
+                    {recipeToCompare.recipeA?.title !== recipe.title && (
+                      <Button
+                        style={{
+                          color: "orange",
+                        }}
+                        type="button"
+                        title="Compare health score!"
+                        onClick={() => {
+                          getRecipeInfoToCompare(recipe.id);
+                        }}
+                        variant="outline-light"
+                      >
+                        <GiNoodles size="1.5rem" />
+                        <TbArrowsLeftRight size="1.1rem" />
+                        <GiChickenLeg size="1.5rem" />
+                      </Button>
+                    )}
+                  </Card.Body>
+                </Card>
+              ))}
+            </Col>
+          </Row>
+        ) : (
+          <div>
+            <p style={{ fontSize: "11px", marginTop: "10px" }}>
+              Oups, we couldn't find any recipe that matches your ingredients.
+              <br />
+              Try searching for another ingredient.
+            </p>
+            <img
+              src={sadNuggie}
+              style={{ width: 150, height: 150 }}
+              alt="no-results-nuggie"
+            />
+          </div>
+        )}
       </Container>
     </div>
   );

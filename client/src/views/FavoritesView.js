@@ -12,8 +12,6 @@ const FavoritesView = (props) => {
     showRecipeFavCb(recipe_id); //time, nutrition
     console.log("someone is clicking on a fav card");
   };
-
-  console.log("what is allfav", allFav);
   //get all from fav by user id and display it
   return (
     <div>

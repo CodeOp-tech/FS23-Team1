@@ -19,6 +19,7 @@ const INIT_LOGINFORM = {
 const LoginView = (props) => {
   const [loginInput, setLoginInput] = useState(INIT_LOGINFORM);
   const navigate = useNavigate();
+  const { inputLoginCb } = props;
   //TOGGLE BUTTON
   // const [active, isActive] = useState(false);
   // const [buttonValue, setButtonValue] = useState("1");
@@ -30,7 +31,7 @@ const LoginView = (props) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    props.inputLoginCb(loginInput);
+    inputLoginCb(loginInput);
     setLoginInput(INIT_LOGINFORM);
     // console.log("someone want to log in... oh lala");
   };

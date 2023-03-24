@@ -5,6 +5,7 @@ import { Container, Row, Col, Form, Button, InputGroup } from "react-bootstrap";
 import "./SearchBar.css";
 import Badge from "react-bootstrap/Badge";
 import XIcon from "../../components/XIcon";
+import sadNuggie from "../../img/sadNuggie.gif";
 
 const SearchBar = (props) => {
   const [inputValue, setInputValue] = useState("");
@@ -14,6 +15,7 @@ const SearchBar = (props) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const result = await Api.getRecipes(ingredients);
+
     setAllRecipes(result); //Using state setter to save recipes fetched from api
     setInputValue(""); //reset empty input field after clicked search button
     navigate("/resultview"); //after "search" go to the ResultView

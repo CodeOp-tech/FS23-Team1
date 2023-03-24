@@ -78,8 +78,6 @@ function App() {
       console.log("you are logged in");
       setUser(myresponse.data.user);
       setLoginErrorMsg("");
-      // need add line 80 because this will fetch all the fav data when loging in and not showing the one from the previous user
-      getFav(Local.getUserId());
       //after clicking on login, if the action succeed then the user is redirected to the homepage
       navigate("*");
     } else {
@@ -91,18 +89,15 @@ function App() {
   function doLogout() {
     Local.removeUserInfo();
     setUser(null);
-    setAllFav([]);
     // (NavBar will send user to home page)
   }
 
   // RECIPES
   const showRecipe = async (id) => {
-    //r.id from every recipe of the result page and the second id is the one from the card that we clicked
     let featuredRecipe = allRecipes.find((r) => r.id === id); //use the id to find the correspondent recipe
-    let recipeInfo = await Api.getRecipeInfo(id); //contains recipe preparation time - id here is the one you click from the card on result
+    let recipeInfo = await Api.getRecipeInfo(id); //contains recipe preparation time
     let recipeNutrition = await Api.getRecipeNutrition(id);
-
-    featuredRecipe.preparationTime = recipeInfo.readyInMinutes; //create a new property to store the preparation time. readyInMinutes from the spoonacular api
+    featuredRecipe.preparationTime = recipeInfo.readyInMinutes; //create a new property to store the preparation time
     featuredRecipe.nutrition = recipeNutrition;
     setRecipe(featuredRecipe); //save the correspondent recipe to the state
 
@@ -110,13 +105,12 @@ function App() {
     navigate(`/featured/${id}`); //navigate to the correspondent recipe page
   };
 
+  // RECIPES
   const showRecipeFav = async (id) => {
-    //r.id from every recipe of the result page and the second id is the one from the card that we clicked
     let featuredRecipe = allRecipes.find((r) => r.recipe_id === id); //use the id to find the correspondent recipe
-    let recipeInfo = await Api.getRecipeInfo(id); //contains recipe preparation time - id here is the one you click from the card on result
+    let recipeInfo = await Api.getRecipeInfo(id); //contains recipe preparation time
     let recipeNutrition = await Api.getRecipeNutrition(id);
-
-    featuredRecipe.preparationTime = recipeInfo.readyInMinutes; //create a new property to store the preparation time. readyInMinutes from the spoonacular api
+    featuredRecipe.preparationTime = recipeInfo.readyInMinutes; //create a new property to store the preparation time
     featuredRecipe.nutrition = recipeNutrition;
     setRecipe(featuredRecipe); //save the correspondent recipe to the state
 
@@ -137,6 +131,7 @@ function App() {
   }, [recipe]);
 
   //FAVOURITES routes
+
   const handleClick = () => {
     console.log("fav button was pressed and passed to APP.js");
   };
@@ -147,9 +142,11 @@ function App() {
   useEffect(() => {
     //we need to pass id, current id is the one store in the local! Id of logged in user
     getFav(Local.getUserId());
+    //we need to pass id, current id is the one store in the local! Id of logged in user
+    getFav(Local.getUserId());
   }, []);
 
-  //GET ALL FAV by UserId
+  //GET ALL FAV of logged in user
   const getFav = async (id) => {
     let Uresponse = await Api.getFav(id);
     if (Uresponse.ok) {
