@@ -141,8 +141,6 @@ function App() {
   useEffect(() => {
     //we need to pass id, current id is the one store in the local! Id of logged in user
     getFav(Local.getUserId());
-    //we need to pass id, current id is the one store in the local! Id of logged in user
-    getFav(Local.getUserId());
   }, []);
 
   //GET ALL FAV of logged in user
@@ -156,95 +154,120 @@ function App() {
   };
 
   //make one route for add/delete
-  const AddOrDelete = async (id) => {
-    let options = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + Local.getToken(),
-      },
-      body: JSON.stringify({
-        recipe_id: recipe.id,
-        recipe_title: recipe.title,
-        recipe_image_url: recipe.image,
-        //user_id was undefined so we have to pass Local.getUserId!!!!
-        user_id: Local.getUserId(),
-      }),
-    };
-    try {
-      let response = await fetch(`/api/favorites`, options);
-      console.log("hello from try", id, recipe.title);
-      if (response.ok) {
-        console.log("hello from response ok", response);
-        let data = await response.json();
-        setAllFav(data);
-      } else {
-        console.log(`Server Error: ${response.status} ${response.statusText}`);
-      }
-    } catch (err) {
-      console.log(`Network Error: ${err.message} `);
+
+  //this function is to allow to click on the heart favorite only and not the card
+  const addOrDelete = async (recipe, event) => {
+    if (event) {
+      event.stopPropagation();
     }
+
+    if (recipe) {
+      let options = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + Local.getToken(),
+        },
+        body: JSON.stringify({
+          recipe_id: recipe.id,
+          recipe_title: recipe.title,
+          recipe_image_url: recipe.image,
+          //user_id was undefined so we have to pass Local.getUserId!!!!
+          user_id: Local.getUserId(),
+        }),
+      };
+      try {
+        // console.log("hello from try", id, recipe.title);
+        let response = await fetch(`/api/favorites`, options);
+
+        if (response.ok) {
+          // console.log("hello from response ok", response);
+          let data = await response.json();
+          setAllFav(data);
+        } else {
+          console.log(
+            `Server Error: ${response.status} ${response.statusText}`
+          );
+        }
+      } catch (err) {
+        console.log(`Network Error: ${err.message} `);
+      }
+    }
+
+    return (
+      <div className="App">
+        <NavBar
+          user={user}
+          logoutCb={doLogout}
+          setIngredients={setIngredients}
+        />
+        <Routes>
+          <Route
+            path="/*"
+            element={
+              <HomePage
+                allRecipes={allRecipes}
+                setAllRecipes={setAllRecipes}
+                ingredients={ingredients}
+                setIngredients={setIngredients}
+              />
+            }
+          />
+          <Route
+            path="/resultview"
+            element={
+              <ResultView
+                allRecipes={allRecipes}
+                setAllRecipes={setAllRecipes}
+                showRecipe={showRecipe}
+                ingredients={ingredients}
+                setIngredients={setIngredients}
+                allfav={allfav}
+                addOrDelete={addOrDelete}
+                // recipe={recipe}
+              />
+            }
+          />
+          <Route
+            path="/featured/:id"
+            element={
+              <RecipeView
+                recipe={recipe}
+                recipeInstructions={recipeInstructions}
+                ingredientList={ingredientList}
+                setRecipe={setRecipe}
+                AddOrDelete={addOrDelete}
+                allfav={allfav}
+                allRecipes={allRecipes}
+              />
+            }
+          />
+
+          <Route
+            path="/login"
+            element={
+              <LoginView inputLoginCb={doLogin} loginErrorCb={loginErrorMsg} />
+            }
+          />
+          <Route
+            path="/register"
+            element={<RegisterView addNewCb={addNew} />}
+          />
+          <Route
+            path="/favorites"
+            element={
+              <PrivateRoute>
+                <FavoritesView
+                  allFav={allfav}
+                  showRecipeFavCb={showRecipeFav}
+                />
+              </PrivateRoute>
+            }
+          />
+        </Routes>
+      </div>
+    );
   };
-
-  return (
-    <div className="App">
-      <NavBar user={user} logoutCb={doLogout} setIngredients={setIngredients} />
-      <Routes>
-        <Route
-          path="/*"
-          element={
-            <HomePage
-              allRecipes={allRecipes}
-              setAllRecipes={setAllRecipes}
-              ingredients={ingredients}
-              setIngredients={setIngredients}
-            />
-          }
-        />
-        <Route
-          path="/resultview"
-          element={
-            <ResultView
-              allRecipes={allRecipes}
-              setAllRecipes={setAllRecipes}
-              showRecipe={showRecipe}
-              ingredients={ingredients}
-              setIngredients={setIngredients}
-            />
-          }
-        />
-        <Route
-          path="/featured/:id"
-          element={
-            <RecipeView
-              recipe={recipe}
-              recipeInstructions={recipeInstructions}
-              ingredientList={ingredientList}
-              setRecipe={setRecipe}
-              handleClick={handleClick}
-              AddOrDelete={AddOrDelete}
-            />
-          }
-        />
-
-        <Route
-          path="/login"
-          element={
-            <LoginView inputLoginCb={doLogin} loginErrorCb={loginErrorMsg} />
-          }
-        />
-        <Route path="/register" element={<RegisterView addNewCb={addNew} />} />
-        <Route
-          path="/favorites"
-          element={
-            <PrivateRoute>
-              <FavoritesView allFav={allfav} showRecipeFavCb={showRecipeFav} />
-            </PrivateRoute>
-          }
-        />
-      </Routes>
-    </div>
-  );
 }
 
 export default App;

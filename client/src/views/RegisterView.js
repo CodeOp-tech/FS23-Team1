@@ -35,9 +35,7 @@ const RegisterView = (props) => {
     //handleSubmit saves all info in register form
     setRegisterForm(INIT_REGISTRATION);
     //first show success alert (NOT DONE YET)
-    // showAlert();
-    navigate("/login");
-    // ; (WORKS FINE its commented out for testing purposes for now)
+    showAlert();
   }
   function showAlert() {
     setShow(true);
