@@ -105,90 +105,67 @@ export default function ResultView(props) {
           marginTop: "25px",
         }}
       >
-        {allRecipes.length > 0 ? (
-          <Row xs={1} md={2} className="g-4">
-            <Col>
-              {allRecipes.map((recipe) => (
-                <Card
-                  key={recipe.id}
-                  className="card-recipe"
-                  style={{ width: "18rem" }}
-                  onClick={(event) => {
-                    if (
-                      event.target.localName !== "svg" &&
-                      event.target.localName !== "path"
-                    ) {
-                      showRecipe(recipe.id);
-                    }
-                  }}
-                >
-                  <div className="container">
-                    <Card.Img variant="top" src={recipe.image} />
-                    {recipe && (
-                      <div>
-                        <button
-                          id="buttononrecipe"
-                          type="button"
-                          onClick={(event) => {
-                            //tried: event.preventDefault(); &event.stopPropagation();
-                            // event.preventDefault();
-                            // event.stopPropagation();
-                            addOrDelete(recipe, event);
-                          }}
-                          className="btn btn-danger"
-                        >
-                          {allfav.some((e) => recipe.id === e.recipe_id) ? (
-                            <i className="bi bi-heart-fill"> </i>
-                          ) : (
-                            <i className="bi bi-heart"></i>
-                          )}
-                        </button>
-                      </div>
-                    )}
-                  </div>
+        <Row xs={1} md={2} className="g-4">
+          <Col>
+            {allRecipes.map((recipe) => (
+              <Card
+                key={recipe.id}
+                className="card-recipe"
+                style={{ width: "18rem" }}
+                onClick={(event) => {
+                  if (
+                    event.target.localName !== "svg" &&
+                    event.target.localName !== "path"
+                  ) {
+                    showRecipe(recipe.id);
+                  }
+                }}
+              >
+                <div className="container">
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    id="buttononrecipe"
+                  >
+                    <i id="heartbutton" className="bi bi-heart"></i>
+                  </button>
+                  <Card.Img variant="top" src={recipe.image} />
+                </div>
 
-                  <Card.Body>
-                    <Card.Title>{recipe.title}</Card.Title>
-                    <Card.Subtitle style={{ color: "orange" }}>
-                      <AiFillLike size="1.8rem" />
-                      {recipe.likes}
-                    </Card.Subtitle>
-                    {recipeToCompare.recipeA?.title !== recipe.title && (
-                      <Button
-                        style={{
-                          color: "orange",
-                        }}
-                        type="button"
-                        title="Compare health score!"
-                        onClick={() => {
-                          getRecipeInfoToCompare(recipe.id);
-                        }}
-                        variant="outline-light"
-                      >
-                        <GiNoodles size="1.5rem" />
-                        <TbArrowsLeftRight size="1.1rem" />
-                        <GiChickenLeg size="1.5rem" />
-                      </Button>
-                    )}
-                  </Card.Body>
-                </Card>
-              ))}
-            </Col>
-          </Row>
-        ) : (
-          <div>
-            <p style={{ fontSize: "11px", marginTop: "10px" }}>
-              Oups, we couldn't find any recipe that matches your ingredients.
-              <br />
-              Try searching for another ingredient.
-            </p>
-            <img
-              src={sadNuggie}
-              style={{ width: 150, height: 150 }}
-              alt="no-results-nuggie"
-            />
-          </div>
-        )}
+                <Card.Body>
+                  <Card.Title>{recipe.title}</Card.Title>
+                  <Card.Subtitle style={{ color: "orange" }}>
+                    <AiFillLike size="1.8rem" />
+                    {recipe.likes}
+                  </Card.Subtitle>
+                  {/*(? means if recipeA is not undefined get the title, else return undefined)*/}
+                  {recipeToCompare.recipeA?.title !== recipe.title && (
+                    <button
+                      style={{
+                        color: "orange",
+                        backgroundColor: "transparent",
+                        borderColor: "transparent",
+                      }}
+                      type="button"
+                      title="Compare health score!"
+                      onClick={(event) => {
+                        getRecipeInfoToCompare(recipe.id);
+                      }}
+                    >
+                      <GiNoodles size="1.5rem" />
+                      <TbArrowsLeftRight size="1.1rem" />
+                      <GiChickenLeg size="1.5rem" />
+                    </button>
+                  )}
+                </Card.Body>
+              </Card>
+            ))}
+          </Col>
+        </Row>
+        {/* we need to add the onClick to do another call and get more recipes */}
+        <Button variant="secondary" style={{ marginTop: "10px" }}>
+          See more recipes
+        </Button>
       </Container>
     </div>
   );

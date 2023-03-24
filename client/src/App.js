@@ -77,6 +77,7 @@ function App() {
       setUser(myresponse.data.user);
       //remember to setloginerrormsg to false, so when loging out the error message won't appear if previously we had the message
       setLoginErrorMsg(!loginErrorMsg);
+      setLoginErrorMsg("");
       //after clicking on login, if the action succeed then the user is redirected to the homepage
       navigate("*");
     } else {
@@ -89,6 +90,7 @@ function App() {
   function doLogout() {
     Local.removeUserInfo();
     setUser(null);
+    // (NavBar will send user to home page)
   }
 
   // RECIPES
@@ -109,6 +111,7 @@ function App() {
     let featuredRecipe = allRecipes.find((r) => r.recipe_id === id); //use the id to find the correspondent recipe
     let recipeInfo = await Api.getRecipeInfo(id); //contains recipe preparation time
     let recipeNutrition = await Api.getRecipeNutrition(id);
+    featuredRecipe.preparationTime = recipeInfo.readyInMinutes; //create a new property to store the preparation time
     featuredRecipe.preparationTime = recipeInfo.readyInMinutes; //create a new property to store the preparation time
     featuredRecipe.nutrition = recipeNutrition;
     setRecipe(featuredRecipe); //save the correspondent recipe to the state
@@ -141,8 +144,11 @@ function App() {
   useEffect(() => {
     //we need to pass id, current id is the one store in the local! Id of logged in user
     getFav(Local.getUserId());
+    //we need to pass id, current id is the one store in the local! Id of logged in user
+    getFav(Local.getUserId());
   }, []);
 
+  //GET ALL FAV of logged in user
   //GET ALL FAV of logged in user
   const getFav = async (id) => {
     let Uresponse = await Api.getFav(id);
@@ -154,7 +160,6 @@ function App() {
   };
 
   //make one route for add/delete
-
   //this function is to allow to click on the heart favorite only and not the card
   const addOrDelete = async (recipe, event) => {
     if (event) {
@@ -222,23 +227,20 @@ function App() {
                 showRecipe={showRecipe}
                 ingredients={ingredients}
                 setIngredients={setIngredients}
-                allfav={allfav}
-                addOrDelete={addOrDelete}
-                // recipe={recipe}
               />
             }
           />
           <Route
-            path="/featured/:id"
+            path="/Featured/:id"
+            path="/Featured/:id"
             element={
               <RecipeView
                 recipe={recipe}
                 recipeInstructions={recipeInstructions}
                 ingredientList={ingredientList}
                 setRecipe={setRecipe}
-                AddOrDelete={addOrDelete}
-                allfav={allfav}
-                allRecipes={allRecipes}
+                handleClick={handleClick}
+                AddOrDelete={AddOrDelete}
               />
             }
           />
