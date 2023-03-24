@@ -27,7 +27,6 @@ export default function ResultView(props) {
   } = props;
   const [recipeToCompare, setRecipeCompare] = useState({});
   const [show, setShow] = useState(false);
-  console.log(allRecipes);
   //ALERT function: we need recipe name, healthScore to show on the alert
   const getRecipeInfoToCompare = async (id) => {
     const recipeInfo = await Api.getRecipeInfo(id);

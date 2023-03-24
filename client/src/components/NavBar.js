@@ -6,8 +6,9 @@ import { NavLink } from "react-router-dom";
 import logo from "../img/foody.png";
 
 const NavBar = (props) => {
+  const { setIngredients, logoutCb } = props;
   const handleLogoClick = () => {
-    props.setIngredients([]);
+    setIngredients([]);
   };
 
   return (
@@ -25,11 +26,7 @@ const NavBar = (props) => {
           </button>
           <ul className="dropdown-menu dropdown-menu-dark">
             <li>
-              <NavLink
-                to="/login"
-                onClick={props.logoutCb}
-                className="dropdown-item"
-              >
+              <NavLink to="/login" onClick={logoutCb} className="dropdown-item">
                 Sign out
               </NavLink>
             </li>

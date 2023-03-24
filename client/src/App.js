@@ -20,7 +20,7 @@ function App() {
   const [allRecipes, setAllRecipes] = useState([]); //I just changed to allRecipes to differenciate with "recipe" state
   const navigate = useNavigate(); //define it first then you can use it later
   const [user, setUser] = useState(Local.getUser());
-  const [loginErrorMsg, setLoginErrorMsg] = useState("");
+  const [loginErrorMsg, setLoginErrorMsg] = useState(true);
   let [allRegistered, setAllRegistered] = useState([]);
   let [ingredients, setIngredients] = useState([]);
 
@@ -28,8 +28,6 @@ function App() {
   const [recipe, setRecipe] = useState(null); //the recipe you clicked on in the result page
   const [recipeInstructions, setRecipeInstructions] = useState();
   const [ingredientList, setIngredientList] = useState();
-  const [recipeInstructionsFav, setRecipeInstructionsFav] = useState();
-  const [ingredientListFav, setIngredientsListFav] = useState();
   const [allfav, setAllFav] = useState([]);
 
   //BACKEND ROUTES
@@ -77,11 +75,13 @@ function App() {
       Local.saveUserInfo(myresponse.data.token, myresponse.data.user);
       console.log("you are logged in");
       setUser(myresponse.data.user);
-      setLoginErrorMsg("");
+      //remember to setloginerrormsg to false, so when loging out the error message won't appear if previously we had the message
+      setLoginErrorMsg(!loginErrorMsg);
       //after clicking on login, if the action succeed then the user is redirected to the homepage
       navigate("*");
     } else {
-      setLoginErrorMsg("Login failed");
+      //no need to pass any argument since the default usestate is already set to true
+      setLoginErrorMsg();
     }
   }
 
@@ -89,7 +89,6 @@ function App() {
   function doLogout() {
     Local.removeUserInfo();
     setUser(null);
-    // (NavBar will send user to home page)
   }
 
   // RECIPES
@@ -231,7 +230,7 @@ function App() {
         <Route
           path="/login"
           element={
-            <LoginView inputLoginCb={doLogin} loginError={loginErrorMsg} />
+            <LoginView inputLoginCb={doLogin} loginErrorCb={loginErrorMsg} />
           }
         />
         <Route path="/register" element={<RegisterView addNewCb={addNew} />} />
