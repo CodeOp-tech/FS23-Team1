@@ -35,21 +35,22 @@ const RegisterView = (props) => {
     //handleSubmit saves all info in register form
     setRegisterForm(INIT_REGISTRATION);
     //first show success alert (NOT DONE YET)
-    showAlert();
+    // showAlert();
+    navigate("/login");
   }
-  function showAlert() {
-    setShow(true);
-    toast.success("Success!", {
-      position: "top-center",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "colored",
-    });
-  }
+  // function showAlert() {
+  //   setShow(true);
+  //   toast.success("Success!", {
+  //     position: "top-center",
+  //     autoClose: 5000,
+  //     hideProgressBar: false,
+  //     closeOnClick: true,
+  //     pauseOnHover: true,
+  //     draggable: true,
+  //     progress: undefined,
+  //     theme: "colored",
+  //   });
+  // }
 
   //Info from form is saved  in state but never reaches DB
   return (

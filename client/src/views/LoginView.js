@@ -1,14 +1,7 @@
 import { useState } from "react";
 import InputBox from "../components/InputBox";
 import { useNavigate } from "react-router-dom";
-import {
-  Container,
-  Form,
-  Button,
-  Nav,
-  ToggleButton,
-  ButtonGroup,
-} from "react-bootstrap";
+import { Container, Form, Button } from "react-bootstrap";
 import "./LoginView.css";
 import nuggetLoginError from "../img/nuggetLoginError.gif";
 
@@ -20,7 +13,7 @@ const INIT_LOGINFORM = {
 const LoginView = (props) => {
   const [loginInput, setLoginInput] = useState(INIT_LOGINFORM);
   const navigate = useNavigate();
-  const { inputLoginCb, loginErrorCb } = props;
+  const { inputLoginCb, loginError } = props;
   //TOGGLE BUTTON
   // const [active, isActive] = useState(false);
   // const [buttonValue, setButtonValue] = useState("1");
@@ -33,6 +26,7 @@ const LoginView = (props) => {
   const handleSubmit = (event) => {
     event.preventDefault();
     inputLoginCb(loginInput);
+
     setLoginInput(INIT_LOGINFORM);
     // console.log("someone want to log in... oh lala");
   };
@@ -45,7 +39,7 @@ const LoginView = (props) => {
 
   return (
     <Container>
-      {loginErrorCb ? (
+      {loginError ? (
         <Form onSubmit={handleSubmit} className="form-container">
           {/* <ButtonGroup className="button-group">
           {buttons.map((button, index) => (
@@ -195,8 +189,8 @@ const LoginView = (props) => {
 
           <div>
             <p style={{ color: "red" }}>
-              Password or email, incorrect. <br></br>Don't chicken out yet and
-              give another try.
+              Password or email incorrect.
+              <br></br>Don't chicken out yet and give it another try.
             </p>
             <img
               src={nuggetLoginError}

@@ -1,28 +1,36 @@
 var express = require("express");
-var path = require("path");
-var cookieParser = require("cookie-parser");
-var logger = require("morgan");
+var router = express.Router();
+const db = require("../model/helper");
+const { ensureSameUser } = require("../middleware/guards");
 
-var indexRouter = require("./routes/index");
-var usersRouter = require("./routes/users");
-var authRouter = require("./routes/auth");
+//Get all
+router.get("/register", async function (req, res, next) {
+  let sql = "SELECT * FROM users  ORDER BY name";
+  //ORDER BY name will order alpabetically
+  try {
+    let results = await db(sql);
+    let users = results.data;
+    users.forEach((u) => delete u.password); //don't return the password
+    res.send(users);
+  } catch (err) {
+    res.status(500).send({ error: err.message });
+  }
+});
 
-var favoritesRouter = require("./routes/favorites"); //here i am importing favorites file in the routes
+//GET USER BY ID
+router.get("/:id", ensureSameUser, async function (req, res, next) {
+  let { id } = req.params;
+  let sql = "SELECT * FROM USERS where id = " + id;
 
-var app = express();
-const cors = require("cors"); // add at the top
+  try {
+    let results = await db(sql);
+    // we know the user exists because they are logged in!
+    let user = results.data[0];
+    delete user.password; //we don't want to return the password
+    res.send(user);
+  } catch (err) {
+    res.status(500).send({ error: err.message });
+  }
+});
 
-app.use(logger("dev"));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(cors()); // add after 'app' is created
-// app.use(express.static(path.join(__dirname, 'public')));
-
-// if you add something in .js file after the / THEN don't add anything here
-app.use("/api/", indexRouter);
-app.use("/api/", usersRouter);
-app.use("/api/", authRouter);
-app.use("/api/", favoritesRouter); //here i am saying all the methods i create in the favorites.js file apply them in /favorites route
-
-module.exports = app;
+module.exports = router;

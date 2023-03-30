@@ -9,7 +9,7 @@ import XIcon from "../../components/XIcon";
 const SearchBar = (props) => {
   const [inputValue, setInputValue] = useState("");
   const navigate = useNavigate();
-  const { setAllRecipes, allRecipes, ingredients, setIngredients } = props;
+  const { setAllRecipes, ingredients, setIngredients } = props;
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -63,7 +63,10 @@ const SearchBar = (props) => {
                 What do you have in the fridge?
               </h4>
             </Form.Label>
-            <Row>
+            <Row
+              className="seachBox"
+              style={{ width: "90%", display: "block", marginLeft: "20px" }}
+            >
               <InputGroup className="mb-3">
                 <Form.Control
                   style={

@@ -5,6 +5,9 @@ nav {
   border: 0px;
   /* margin-bottom: 20px; */
 }
+.navItem {
+  padding: 0px 15px;
+}
 
 button {
   background-color: #358484;

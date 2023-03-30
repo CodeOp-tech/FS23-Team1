@@ -4,7 +4,6 @@ import "bootstrap/dist/css/bootstrap.min.css"; //this is a the css file used in 
 import "./App.css";
 import { Local } from "./helpers/Local";
 import { Api } from "./helpers/Api";
-
 import NavBar from "./components/NavBar";
 import HomePage from "./views/Home/HomePage";
 import RegisterView from "./views/RegisterView";
@@ -13,7 +12,6 @@ import ResultView from "./components/ResultView";
 import RecipeView from "./components/RecipeView";
 import FavoritesView from "./views/FavoritesView";
 import PrivateRoute from "./components/PrivateRoute";
-
 import { getIngredientList, getSteps } from "./helpers/Api";
 
 function App() {
@@ -28,6 +26,7 @@ function App() {
   const [recipe, setRecipe] = useState(null); //the recipe you clicked on in the result page
   const [recipeInstructions, setRecipeInstructions] = useState();
   const [ingredientList, setIngredientList] = useState();
+
   const [allfav, setAllFav] = useState([]);
 
   //BACKEND ROUTES
@@ -71,13 +70,15 @@ function App() {
   async function doLogin(loginObj) {
     const myresponse = await Api.loginUser(loginObj);
     console.log("passed to DB");
+    console.log(loginErrorMsg);
     if (myresponse.ok) {
       Local.saveUserInfo(myresponse.data.token, myresponse.data.user);
       console.log("you are logged in");
       setUser(myresponse.data.user);
+      // need add line 80 because this will fetch all the fav data when loging in and not showing the one from the previous user
+      getFav(Local.getUserId());
       //remember to setloginerrormsg to false, so when loging out the error message won't appear if previously we had the message
       setLoginErrorMsg(!loginErrorMsg);
-      setLoginErrorMsg("");
       //after clicking on login, if the action succeed then the user is redirected to the homepage
       navigate("*");
     } else {
@@ -95,10 +96,12 @@ function App() {
 
   // RECIPES
   const showRecipe = async (id) => {
+    //r.id from every recipe of the result page and the second id is the one from the card that we clicked
     let featuredRecipe = allRecipes.find((r) => r.id === id); //use the id to find the correspondent recipe
-    let recipeInfo = await Api.getRecipeInfo(id); //contains recipe preparation time
+    let recipeInfo = await Api.getRecipeInfo(id); //contains recipe preparation time - id here is the one you click from the card on result
     let recipeNutrition = await Api.getRecipeNutrition(id);
-    featuredRecipe.preparationTime = recipeInfo.readyInMinutes; //create a new property to store the preparation time
+
+    featuredRecipe.preparationTime = recipeInfo.readyInMinutes; //create a new property to store the preparation time. readyInMinutes from the spoonacular api
     featuredRecipe.nutrition = recipeNutrition;
     setRecipe(featuredRecipe); //save the correspondent recipe to the state
 
@@ -106,13 +109,13 @@ function App() {
     navigate(`/featured/${id}`); //navigate to the correspondent recipe page
   };
 
-  // RECIPES
   const showRecipeFav = async (id) => {
+    //r.id from every recipe of the result page and the second id is the one from the card that we clicked
     let featuredRecipe = allRecipes.find((r) => r.recipe_id === id); //use the id to find the correspondent recipe
-    let recipeInfo = await Api.getRecipeInfo(id); //contains recipe preparation time
+    let recipeInfo = await Api.getRecipeInfo(id); //contains recipe preparation time - id here is the one you click from the card on result
     let recipeNutrition = await Api.getRecipeNutrition(id);
-    featuredRecipe.preparationTime = recipeInfo.readyInMinutes; //create a new property to store the preparation time
-    featuredRecipe.preparationTime = recipeInfo.readyInMinutes; //create a new property to store the preparation time
+
+    featuredRecipe.preparationTime = recipeInfo.readyInMinutes; //create a new property to store the preparation time. readyInMinutes from the spoonacular api
     featuredRecipe.nutrition = recipeNutrition;
     setRecipe(featuredRecipe); //save the correspondent recipe to the state
 
@@ -133,7 +136,6 @@ function App() {
   }, [recipe]);
 
   //FAVOURITES routes
-
   const handleClick = () => {
     console.log("fav button was pressed and passed to APP.js");
   };
@@ -144,12 +146,9 @@ function App() {
   useEffect(() => {
     //we need to pass id, current id is the one store in the local! Id of logged in user
     getFav(Local.getUserId());
-    //we need to pass id, current id is the one store in the local! Id of logged in user
-    getFav(Local.getUserId());
   }, []);
 
-  //GET ALL FAV of logged in user
-  //GET ALL FAV of logged in user
+  //GET ALL FAV by UserId
   const getFav = async (id) => {
     let Uresponse = await Api.getFav(id);
     if (Uresponse.ok) {
@@ -160,12 +159,11 @@ function App() {
   };
 
   //make one route for add/delete
-  //this function is to allow to click on the heart favorite only and not the card
-  const addOrDelete = async (recipe, event) => {
+
+  const AddOrDelete = async (recipe, event) => {
     if (event) {
       event.stopPropagation();
     }
-
     if (recipe) {
       let options = {
         method: "POST",
@@ -181,10 +179,10 @@ function App() {
           user_id: Local.getUserId(),
         }),
       };
+      // console.log("this is from POST btw", id);
       try {
         // console.log("hello from try", id, recipe.title);
         let response = await fetch(`/api/favorites`, options);
-
         if (response.ok) {
           // console.log("hello from response ok", response);
           let data = await response.json();
@@ -198,78 +196,71 @@ function App() {
         console.log(`Network Error: ${err.message} `);
       }
     }
-
-    return (
-      <div className="App">
-        <NavBar
-          user={user}
-          logoutCb={doLogout}
-          setIngredients={setIngredients}
-        />
-        <Routes>
-          <Route
-            path="/*"
-            element={
-              <HomePage
-                allRecipes={allRecipes}
-                setAllRecipes={setAllRecipes}
-                ingredients={ingredients}
-                setIngredients={setIngredients}
-              />
-            }
-          />
-          <Route
-            path="/resultview"
-            element={
-              <ResultView
-                allRecipes={allRecipes}
-                setAllRecipes={setAllRecipes}
-                showRecipe={showRecipe}
-                ingredients={ingredients}
-                setIngredients={setIngredients}
-              />
-            }
-          />
-          <Route
-            path="/Featured/:id"
-            path="/Featured/:id"
-            element={
-              <RecipeView
-                recipe={recipe}
-                recipeInstructions={recipeInstructions}
-                ingredientList={ingredientList}
-                setRecipe={setRecipe}
-                handleClick={handleClick}
-                AddOrDelete={AddOrDelete}
-              />
-            }
-          />
-
-          <Route
-            path="/login"
-            element={
-              <LoginView inputLoginCb={doLogin} loginErrorCb={loginErrorMsg} />
-            }
-          />
-          <Route
-            path="/register"
-            element={<RegisterView addNewCb={addNew} />}
-          />
-          <Route
-            path="/favorites"
-            element={
-              <PrivateRoute>
-                <FavoritesView
-                  allFav={allfav}
-                  showRecipeFavCb={showRecipeFav}
-                />
-              </PrivateRoute>
-            }
-          />
-        </Routes>
-      </div>
-    );
   };
+
+  return (
+    <div className="App">
+      <NavBar user={user} logoutCb={doLogout} setIngredients={setIngredients} />
+      <Routes>
+        <Route
+          path="/*"
+          element={
+            <HomePage
+              allRecipes={allRecipes}
+              setAllRecipes={setAllRecipes}
+              ingredients={ingredients}
+              setIngredients={setIngredients}
+            />
+          }
+        />
+        <Route
+          path="/resultview"
+          element={
+            <ResultView
+              allRecipes={allRecipes}
+              setAllRecipes={setAllRecipes}
+              showRecipe={showRecipe}
+              ingredients={ingredients}
+              setIngredients={setIngredients}
+              allfav={allfav}
+              AddOrDelete={AddOrDelete}
+              // recipe={recipe}
+            />
+          }
+        />
+        <Route
+          path="/featured/:id"
+          element={
+            <RecipeView
+              recipe={recipe}
+              recipeInstructions={recipeInstructions}
+              ingredientList={ingredientList}
+              setRecipe={setRecipe}
+              AddOrDelete={AddOrDelete}
+              allfav={allfav}
+              allRecipes={allRecipes}
+            />
+          }
+        />
+
+        <Route
+          path="/login"
+          element={
+            <LoginView inputLoginCb={doLogin} loginError={loginErrorMsg} />
+          }
+        />
+        <Route path="/register" element={<RegisterView addNewCb={addNew} />} />
+        <Route
+          path="/favorites"
+          element={
+            <PrivateRoute>
+              <FavoritesView allFav={allfav} showRecipeFavCb={showRecipeFav} />
+            </PrivateRoute>
+          }
+        />
+      </Routes>
+    </div>
+  );
 }
 
 export default App;

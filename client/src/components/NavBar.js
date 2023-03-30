@@ -6,13 +6,15 @@ import { NavLink } from "react-router-dom";
 import logo from "../img/foody.png";
 
 const NavBar = (props) => {
-  const { setIngredients, logoutCb } = props;
   const handleLogoClick = () => {
-    setIngredients([]);
+    props.setIngredients([]);
   };
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-light">
+    <nav
+      className="navbar navbar-expand-lg navbar-light"
+      style={{ padding: "0px 10px" }}
+    >
       {props.user ? (
         <div className="btn-group">
           <button
@@ -24,9 +26,13 @@ const NavBar = (props) => {
             {/* this is the icon I have imported directly from react-icon library */}
             <GiCookingPot />
           </button>
-          <ul className="dropdown-menu dropdown-menu-dark">
+          <ul className="dropdown-menu">
             <li>
-              <NavLink to="/login" onClick={logoutCb} className="dropdown-item">
+              <NavLink
+                to="/login"
+                onClick={props.logoutCb}
+                className="dropdown-item"
+              >
                 Sign out
               </NavLink>
             </li>
@@ -36,8 +42,8 @@ const NavBar = (props) => {
               </NavLink>
             </li>
             <li>
-              <NavLink to="/aboutUs" className="dropdown-item">
-                About us
+              <NavLink to="/*" className="dropdown-item">
+                Home
               </NavLink>
             </li>
           </ul>
@@ -61,8 +67,8 @@ const NavBar = (props) => {
             </li>
 
             <li>
-              <NavLink to="/aboutUs" className="dropdown-item">
-                About us
+              <NavLink to="/*" className="dropdown-item">
+                Home
               </NavLink>
             </li>
           </ul>
